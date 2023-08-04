@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xo.mapper.HomeMapper">
+
+
+	<select id="alertboard" resultType="com.xo.VO.HomeVO">
+		SELECT * FROM
+		outer.g6_write_7_3_1;
+	</select>
+	<insert id="insertalertboard" parameterType="com.xo.VO.HomeVO">
+		INSERT INTO
+		outer.g6_write_7_3_1 (
+		wr_id, wr_num,
+		wr_reply, wr_parent,
+		wr_is_comment, wr_comment,
+		wr_comment_reply,
+		ca_name, wr_option,
+		wr_subject, wr_content, wr_seo_title, wr_link1,
+		wr_link2,
+		wr_link1_hit,
+		wr_link2_hit, wr_hit, wr_good, wr_nogood,
+		mb_id,
+		wr_password,
+		wr_name,
+		wr_email, wr_homepage, wr_datetime,
+		wr_file, wr_last, wr_ip,
+		wr_facebook_user, wr_twitter_user, wr_1, wr_2,
+		wr_3, wr_4, wr_5,
+		wr_6,
+		wr_7, wr_8, wr_9, wr_10
+		) VALUES (
+		#{wr_id},
+		#{wr_num}, #{wr_reply},
+		#{wr_parent}, #{wr_is_comment},
+		#{wr_comment},
+		#{wr_comment_reply},
+		#{ca_name}, #{wr_option}, #{wr_subject},
+		#{wr_content},
+		#{wr_seo_title},
+		#{wr_link1}, #{wr_link2},
+		#{wr_link1_hit},
+		#{wr_link2_hit}, #{wr_hit}, #{wr_good}, #{wr_nogood},
+		#{mb_id},
+		#{wr_password},
+		#{wr_name}, #{wr_email}, #{wr_homepage},
+		now(),
+		#{wr_file}, now(), #{wr_ip},
+		#{wr_facebook_user},
+		#{wr_twitter_user},
+		#{wr_1}, #{wr_2}, #{wr_3},
+		#{wr_4}, #{wr_5},
+		#{wr_6}, #{wr_7}, #{wr_8},
+		#{wr_9}, #{wr_10}
+		)
+	</insert>
+	<select id="filesave" resultType="com.xo.VO.FileVO">
+		select * from outer.g6_board_file;
+	</select>
+
+</mapper>

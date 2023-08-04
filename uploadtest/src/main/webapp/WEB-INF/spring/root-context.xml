@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xmlns:mybatis-spring="http://mybatis.org/schema/mybatis-spring"
+	xsi:schemaLocation="http://mybatis.org/schema/mybatis-spring http://mybatis.org/schema/mybatis-spring-1.2.xsd
+        http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	<!-- Root Context: defines shared resources visible to all other web components 
+		localhost:3306 -->
+
+	<!-- DB정보를 담고있는 객체 --> <!-- mariadb driverClassName value="org.mariadb" -->
+	<!-- mysql "driverClassName" value="com.mysql.jdbc.Driver" -->
+	<bean id="hikariConfig" class="com.zaxxer.hikari.HikariConfig">
+		<property name="driverClassName"
+			value="com.mysql.jdbc.Driver"></property>
+		<property name="jdbcUrl"
+			value="jdbc:mysql://outer.kr:3306/outer"></property>
+		<property name="username" value="jninvest"></property>
+		<property name="password" value="guru2sun"></property>
+	</bean>
+
+
+
+	<!-- 커넥션 풀 생성을 도울 객체 생성 -->
+	<!-- Connection들을 가지고있는 DBCP -->
+	<!--HikariCP Configration -->
+	<bean id="dataSource" class="com.zaxxer.hikari.HikariDataSource"
+		destroy-method="close">
+		<constructor-arg ref="hikariConfig" />
+	</bean>
+
+	<!-- 커넥션과 Mapper객체들을 관리할 sqlSessionFactory객체 생성 -->
+	<!-- Connection Pool 생성을 돕는 DataSource 생성 -->
+	<bean id="sqlSessionFactory"
+		class="org.mybatis.spring.SqlSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+	</bean>
+
+	<!-- ★★★★★★★★★★★★★★★★★★★★★★★ mapper 인터페이스를 찾아 구현하는 역할 mapper가 있는 패키지를 스캔해서 
+		interface를 완전한 객체로 채워주는것이 바로 scan이다. -->
+	<mybatis-spring:scan base-package="com.xo.mapper" />
+
+
+	<alias name="spring.RegularCommonsMultipartResolver"
+		alias="filterMultipartResolver" />
+	<!-- <context:component-scan base-package="com.smhrd.mapper"></context:component-scan> -->
+
+</beans>
+
+<!-- bean : Java Object(자바객체) - 스프링이 생성, 삭제를 관리하는 객체 root-context.xml 에서 
+	관리를 해준다. IOC(Inversion of Control, 제어 역전) : 사람이 객체를 만들고, 사용하는게 아니라, 스프링이 
+	알아서 만들고 연결 -->
