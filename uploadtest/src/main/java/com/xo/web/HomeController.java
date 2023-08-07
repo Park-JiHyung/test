@@ -2,12 +2,16 @@ package com.xo.web;
 
 import java.io.BufferedOutputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.io.PrintWriter;
+import java.net.URLEncoder;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -90,7 +94,6 @@ public class HomeController {
 		if (!file.isEmpty()) {
 			try {
 				byte[] bytes = file.getBytes();
-
 				// Creating the directory to store the file (change fileStoragePath to your
 				// desired directory)
 				File dir = new File(fileStoragePath);
@@ -108,8 +111,8 @@ public class HomeController {
 
 				// Execute JavaScript to close the window and set the value of attach_filename
 				String closeWindowScript = "<script>" + "var filename = '" + originalFileName + "';"
-						+ "window.opener.document.getElementById('wr_1').value = filename;"
-						+ "window.close();" + "</script>";
+						+ "window.opener.document.getElementById('wr_1').value = filename;" + "window.close();"
+						+ "</script>";
 				response.setContentType("text/html");
 				response.getWriter().println(closeWindowScript);
 
@@ -145,8 +148,8 @@ public class HomeController {
 
 				// Execute JavaScript to close the window and set the value of attach_filename
 				String closeWindowScript = "<script>" + "var filename = '" + originalFileName + "';"
-						+ "window.opener.document.getElementById('wr_2').value = filename;"
-						+ "window.close();" + "</script>";
+						+ "window.opener.document.getElementById('wr_2').value = filename;" + "window.close();"
+						+ "</script>";
 				response.setContentType("text/html");
 				response.getWriter().println(closeWindowScript);
 
@@ -158,4 +161,46 @@ public class HomeController {
 		}
 	}
 
+	@RequestMapping(value = "/downloadFile", method = RequestMethod.GET)
+	public void downloadFileHandler(@RequestParam("filename") String filename, HttpServletResponse response)
+	        throws IOException {
+	    File file = new File(fileStoragePath + File.separator + filename);
+	    System.out.println(filename.toString());
+	    System.out.println("file : " + file.toString());
+	    if (file.exists()) {
+	        try {
+	            System.out.println("File Path: " + file.getAbsolutePath());
+	            System.out.println("File Name: " + file.getName());
+
+	            // 파일명을 UTF-8로 인코딩하여 Content-Disposition 헤더에 설정
+	            String encodedFilename = URLEncoder.encode(filename, "UTF-8");
+	            response.setContentType("application/octet-stream");
+	            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFilename + "\"");
+
+	            FileInputStream fis = new FileInputStream(file);
+	            OutputStream os = response.getOutputStream();
+	            byte[] buffer = new byte[4096];
+	            int bytesRead;
+	            while ((bytesRead = fis.read(buffer)) != -1) {
+	                os.write(buffer, 0, bytesRead);
+	            }
+
+	            os.flush();
+	            os.close();
+	            fis.close();
+	        } catch (IOException e) {
+	            logger.error("Failed to download file => " + e.getMessage());
+	        }
+	    } else {
+	        // 파일이 존재하지 않을 때 클라이언트에게 응답으로 전달합니다.
+	        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+	        response.getWriter().write("<!DOCTYPE html>\n" + "<html>\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
+	                + "    <title>File Not Found</title>\n" + "</head>\n" + "<body>\n"
+	                + "    <!-- 해당 페이지에서 파일이 없음을 표시 -->\n" + "    <script>\n" + "            alert('파일을 찾을 수 없습니다.');\n"
+	                + "    </script>\n" + "    <p>파일을 찾을 수 없습니다.</p>\n" + "\n" + "    <script>\n"
+	                + "        setTimeout(function () {\n" + "            window.close();\n" + "        }, 10);\n"
+	                + "    </script>\n" + "</body>\n" + "</html>");
+	        response.getWriter().flush();
+	    }
+	}
 }

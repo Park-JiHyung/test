@@ -148,8 +148,8 @@
 						<td>${vo.wr_subject}</td>
 						<td>${vo.wr_name}</td>
 						<td>${vo.wr_datetime}</td>
-						<td>${vo.wr_1}</td>
-						<td>${vo.wr_2}</td>
+						<td><a href="downloadFile?filename=${vo.wr_1}" target="_BLANK">${vo.wr_1}</a></td>
+						<td><a href="downloadFile?filename=${vo.wr_2}" target="_BLANK">${vo.wr_2}</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -191,6 +191,7 @@
 				</c:forEach>
 			</tbody>
 		</table>
+		<input type="hidden"id="boardtype"value="7_3_1"></input>
 	</div>
 	<br>
 	<br>
