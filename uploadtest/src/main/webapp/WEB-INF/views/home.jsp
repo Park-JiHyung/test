@@ -30,7 +30,7 @@
 	<h1>Hello world!</h1>
 
 	<P>The time on the server is ${serverTime}.</P>
-	<form id="insertalertboard" action="insertalertboard" method="post">
+	<form id="insertalertboard" action="insertalertboard" method="get" enctype="multipart/form-data">
 
 		<input type="hidden" value="a" name="wr_10"> <input
 			type="hidden" value="a" name="wr_9"> <input type="hidden"
@@ -99,21 +99,23 @@
 
 
 
-		<div class="errorItem">
+	<input type="file" name="wr_1" accept=".jpg,.png,.gif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.hwpx">
+	<input type="file" name="wr_2" accept=".jpg,.png,.gif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.hwpx">
+		<!-- <div class="errorItem">
 			<label for="" class="errorLabel">첨부파일</label>
 			<div class="errorInsert">
-				<!--select id="" multiple="multiple" size="5" class="multiSelectBox"></select-->
+				select id="" multiple="multiple" size="5" class="multiSelectBox"></select
 				<div>
 					<button type="button" class="input" size="60" maxlength="60"
 						accept=".jpg,.png,.gif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.hwpx"
-						onclick="openUploadWindow()">파일첨부</button>
+						onclick="openUploadWindow('731')">파일첨부</button>
 					<input type="text" id="wr_1" name="wr_1">
 				</div>
 			</div>
 		</div>
 		<div class="errorItem">
 			<div class="errorInsert">
-				<!--select id="" multiple="multiple" size="5" class="multiSelectBox"></select-->
+				select id="" multiple="multiple" size="5" class="multiSelectBox"></select
 				<div>
 					<button type="button" class="input" size="60" maxlength="60"
 						accept=".jpg,.png,.gif,.doc,.docx,.xls,.xlsx,.ppt,.pptx,.hwp,.hwpx"
@@ -124,7 +126,7 @@
 				<p>업로드 가능확장자: jpg, png, gif, doc, docx, xls, xlsx, ppt, pptx,
 					hwp, hwpx</p>
 			</div>
-		</div>
+		</div> -->
 		<button type="submit">저장</button>
 	</form>
 	<div>
@@ -145,11 +147,15 @@
 					<tr>
 						<td></td>
 						<td>${vo.wr_id}</td>
-						<td>${vo.wr_subject}</td>
+						<td><div class="bo_tit">
+								<a href="./boarddetail?seq=${vo.wr_id}">${vo.wr_subject}</a>
+							</div></td>
 						<td>${vo.wr_name}</td>
 						<td>${vo.wr_datetime}</td>
-						<td><a href="downloadFile?filename=${vo.wr_1}" target="_BLANK">${vo.wr_1}</a></td>
-						<td><a href="downloadFile?filename=${vo.wr_2}" target="_BLANK">${vo.wr_2}</a></td>
+						<td><a href="downloadFile?filename=${vo.wr_1}"
+							target="_BLANK">${vo.wr_1}</a></td>
+						<td><a href="downloadFile?filename=${vo.wr_2}"
+							target="_BLANK">${vo.wr_2}</a></td>
 					</tr>
 				</c:forEach>
 			</tbody>
@@ -191,7 +197,7 @@
 				</c:forEach>
 			</tbody>
 		</table>
-		<input type="hidden"id="boardtype"value="7_3_1"></input>
+		<input type="hidden" id="boardtype" value="7_3_1"></input>
 	</div>
 	<br>
 	<br>
@@ -241,9 +247,9 @@
 
 				});
 	</script>
-	<script>
-		function openUploadWindow() {
-			var url = "./uploadFile";
+	<!-- <script>
+		function openUploadWindow(seq) {
+			var url = "./uploadFile?seq=" + seq;
 			var width = 600;
 			var height = 400;
 			var left = (window.innerWidth - width) / 2;
@@ -254,6 +260,7 @@
 			window.open(url, "_blank", options);
 		}
 	</script>
+
 	<script>
 		function openUploadWindow2() {
 			var url = "./uploadFile2";
@@ -266,7 +273,7 @@
 
 			window.open(url, "_blank", options);
 		}
-	</script>
+	</script> -->
 </body>
 
 </html>

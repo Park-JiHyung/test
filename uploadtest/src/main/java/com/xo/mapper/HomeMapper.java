@@ -13,4 +13,10 @@ public interface HomeMapper {
 
 	List<FileVO> filesave();
 
+	void increaseHitCount(int seq);
+
+	HomeVO getByWrId(int seq);
+
+
+
 }

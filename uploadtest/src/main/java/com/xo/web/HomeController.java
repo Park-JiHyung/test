@@ -75,8 +75,8 @@ public class HomeController {
 	}
 
 	@RequestMapping("/uploadFile")
-	public String uploadFile() {
-
+	public String uploadFile(@RequestParam("seq") int seq, Model model) {
+		model.addAttribute("seq", seq);
 		return "uploadFile";
 	}
 
@@ -88,119 +88,116 @@ public class HomeController {
 
 	private String fileStoragePath = System.getProperty("catalina.home") + File.separator + "tmpFiles";
 
-	@RequestMapping(value = "/uploadFile", method = RequestMethod.POST)
-	public void uploadFileHandler(@RequestPart("uploadFile") MultipartFile file, HttpServletResponse response) {
+	@RequestMapping(value = "/insertalertboard", method = RequestMethod.GET)
+	public String insertalertboard(
+			@RequestParam(value = "wr_1", required = false) MultipartFile file1,
+			@RequestParam(value = "wr_2", required = false) MultipartFile file2, 
+			@ModelAttribute("vo") HomeVO vo,
+			Model model, HttpServletResponse response) 
+					throws IOException {
+		System.out.println("뭐가들어오냐 : " + vo.toString());
+		homemapper.insertalertboard(vo);
 
-		if (!file.isEmpty()) {
+		if (file1 != null && !file1.isEmpty()) {
 			try {
-				byte[] bytes = file.getBytes();
-				// Creating the directory to store the file (change fileStoragePath to your
-				// desired directory)
-				File dir = new File(fileStoragePath);
-				if (!dir.exists())
-					dir.mkdirs();
-
-				// Create the file on the server with the original file name
-				String originalFileName = file.getOriginalFilename();
-				File serverFile = new File(dir.getAbsolutePath() + File.separator + originalFileName);
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				logger.info("Server File Location=" + serverFile.getAbsolutePath());
-
-				// Execute JavaScript to close the window and set the value of attach_filename
-				String closeWindowScript = "<script>" + "var filename = '" + originalFileName + "';"
-						+ "window.opener.document.getElementById('wr_1').value = filename;" + "window.close();"
-						+ "</script>";
-				response.setContentType("text/html");
-				response.getWriter().println(closeWindowScript);
-
+				byte[] bytes = file1.getBytes();
+				// 파일 업로드 처리 로직
 			} catch (Exception e) {
-				logger.error("Failed to upload file => " + e.getMessage());
+				logger.error("Failed to upload file 1 => " + e.getMessage());
 			}
-		} else {
-			logger.error("No file uploaded.");
 		}
+
+		if (file2 != null && !file2.isEmpty()) {
+			try {
+				byte[] bytes = file2.getBytes();
+				// 파일 업로드 처리 로직
+			} catch (Exception e) {
+				logger.error("Failed to upload file 2 => " + e.getMessage());
+			}
+		}
+
+		return "";
 	}
 
-	@RequestMapping(value = "/uploadFile2", method = RequestMethod.POST)
-	public void uploadFileHandler2(@RequestPart("uploadFile2") MultipartFile file, HttpServletResponse response) {
-
-		if (!file.isEmpty()) {
-			try {
-				byte[] bytes = file.getBytes();
-
-				// Creating the directory to store the file (change fileStoragePath to your
-				// desired directory)
-				File dir = new File(fileStoragePath);
-				if (!dir.exists())
-					dir.mkdirs();
-
-				// Create the file on the server with the original file name
-				String originalFileName = file.getOriginalFilename();
-				File serverFile = new File(dir.getAbsolutePath() + File.separator + originalFileName);
-				BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(serverFile));
-				stream.write(bytes);
-				stream.close();
-
-				logger.info("Server File Location=" + serverFile.getAbsolutePath());
-
-				// Execute JavaScript to close the window and set the value of attach_filename
-				String closeWindowScript = "<script>" + "var filename = '" + originalFileName + "';"
-						+ "window.opener.document.getElementById('wr_2').value = filename;" + "window.close();"
-						+ "</script>";
-				response.setContentType("text/html");
-				response.getWriter().println(closeWindowScript);
-
-			} catch (Exception e) {
-				logger.error("Failed to upload file => " + e.getMessage());
-			}
-		} else {
-			logger.error("No file uploaded.");
-		}
-	}
+	/*
+	 * @RequestMapping(value = "/uploadFile2", method = RequestMethod.POST) public
+	 * void uploadFileHandler2(@RequestPart("uploadFile2") MultipartFile file,
+	 * HttpServletResponse response) {
+	 * 
+	 * if (!file.isEmpty()) { try { byte[] bytes = file.getBytes();
+	 * 
+	 * // Creating the directory to store the file (change fileStoragePath to your
+	 * // desired directory) File dir = new File(fileStoragePath); if
+	 * (!dir.exists()) dir.mkdirs();
+	 * 
+	 * // Create the file on the server with the original file name String
+	 * originalFileName = file.getOriginalFilename(); File serverFile = new
+	 * File(dir.getAbsolutePath() + File.separator + originalFileName);
+	 * BufferedOutputStream stream = new BufferedOutputStream(new
+	 * FileOutputStream(serverFile)); stream.write(bytes); stream.close();
+	 * 
+	 * logger.info("Server File Location=" + serverFile.getAbsolutePath());
+	 * 
+	 * // Execute JavaScript to close the window and set the value of
+	 * attach_filename String closeWindowScript = "<script>" + "var filename = '" +
+	 * originalFileName + "';" +
+	 * "window.opener.document.getElementById('wr_2').value = filename;" +
+	 * "window.close();" + "</script>"; response.setContentType("text/html");
+	 * response.getWriter().println(closeWindowScript);
+	 * 
+	 * } catch (Exception e) { logger.error("Failed to upload file => " +
+	 * e.getMessage()); } } else { logger.error("No file uploaded."); } }
+	 */
 
 	@RequestMapping(value = "/downloadFile", method = RequestMethod.GET)
 	public void downloadFileHandler(@RequestParam("filename") String filename, HttpServletResponse response)
-	        throws IOException {
-	    File file = new File(fileStoragePath + File.separator + filename);
-	    System.out.println(filename.toString());
-	    System.out.println("file : " + file.toString());
-	    if (file.exists()) {
-	        try {
-	            System.out.println("File Path: " + file.getAbsolutePath());
-	            System.out.println("File Name: " + file.getName());
+			throws IOException {
+		File file = new File(fileStoragePath + File.separator + filename);
+		System.out.println(filename.toString());
+		System.out.println("file : " + file.toString());
+		if (file.exists()) {
+			try {
+				System.out.println("File Path: " + file.getAbsolutePath());
+				System.out.println("File Name: " + file.getName());
 
-	            // 파일명을 UTF-8로 인코딩하여 Content-Disposition 헤더에 설정
-	            String encodedFilename = URLEncoder.encode(filename, "UTF-8");
-	            response.setContentType("application/octet-stream");
-	            response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFilename + "\"");
+				// 파일명을 UTF-8로 인코딩하여 Content-Disposition 헤더에 설정
+				String encodedFilename = URLEncoder.encode(filename, "UTF-8");
+				response.setContentType("application/octet-stream");
+				response.setHeader("Content-Disposition", "attachment; filename=\"" + encodedFilename + "\"");
 
-	            FileInputStream fis = new FileInputStream(file);
-	            OutputStream os = response.getOutputStream();
-	            byte[] buffer = new byte[4096];
-	            int bytesRead;
-	            while ((bytesRead = fis.read(buffer)) != -1) {
-	                os.write(buffer, 0, bytesRead);
-	            }
+				FileInputStream fis = new FileInputStream(file);
+				OutputStream os = response.getOutputStream();
+				byte[] buffer = new byte[4096];
+				int bytesRead;
+				while ((bytesRead = fis.read(buffer)) != -1) {
+					os.write(buffer, 0, bytesRead);
+				}
 
-	            os.flush();
-	            os.close();
-	            fis.close();
-	        } catch (IOException e) {
-	            logger.error("Failed to download file => " + e.getMessage());
-	        }
-	    } else {
-	        // 파일이 존재하지 않을 때 클라이언트에게 응답으로 전달합니다.
-	        response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-	        response.getWriter().write("<!DOCTYPE html>\n" + "<html>\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
-	                + "    <title>File Not Found</title>\n" + "</head>\n" + "<body>\n"
-	                + "    <!-- 해당 페이지에서 파일이 없음을 표시 -->\n" + "    <script>\n" + "            alert('파일을 찾을 수 없습니다.');\n"
-	                + "    </script>\n" + "    <p>파일을 찾을 수 없습니다.</p>\n" + "\n" + "    <script>\n"
-	                + "        setTimeout(function () {\n" + "            window.close();\n" + "        }, 10);\n"
-	                + "    </script>\n" + "</body>\n" + "</html>");
-	        response.getWriter().flush();
-	    }
+				os.flush();
+				os.close();
+				fis.close();
+			} catch (IOException e) {
+				logger.error("Failed to download file => " + e.getMessage());
+			}
+		} else {
+			// 파일이 존재하지 않을 때 클라이언트에게 응답으로 전달합니다.
+			response.setStatus(HttpServletResponse.SC_NOT_FOUND);
+			response.getWriter().write("<!DOCTYPE html>\n" + "<html>\n" + "<head>\n" + "    <meta charset=\"UTF-8\">\n"
+					+ "    <title>File Not Found</title>\n" + "</head>\n" + "<body>\n"
+					+ "    <!-- 해당 페이지에서 파일이 없음을 표시 -->\n" + "    <script>\n" + "            alert('파일을 찾을 수 없습니다.');\n"
+					+ "    </script>\n" + "    <p>파일을 찾을 수 없습니다.</p>\n" + "\n" + "    <script>\n"
+					+ "        setTimeout(function () {\n" + "            window.close();\n" + "        }, 10);\n"
+					+ "    </script>\n" + "</body>\n" + "</html>");
+			response.getWriter().flush();
+		}
+	}
+
+	@RequestMapping(value = "/boarddetail", method = RequestMethod.GET)
+	public String boarddetail(@RequestParam("seq") int seq, Model model) {
+		homemapper.increaseHitCount(seq);
+		HomeVO list = homemapper.getByWrId(seq);
+		model.addAttribute("list", list);
+
+		return "boarddetail";
 	}
 }

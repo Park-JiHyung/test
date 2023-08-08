@@ -57,4 +57,14 @@
 		select * from outer.g6_board_file;
 	</select>
 
+	 <update id="increaseHitCount" parameterType="int">
+        UPDATE g6_write_7_3_1
+        SET wr_hit = wr_hit + 1
+        WHERE wr_id = #{seq}
+    </update>
+      <select id="getByWrId" resultType="com.xo.VO.HomeVO">
+        SELECT *
+        FROM g6_write_7_3_1
+        WHERE wr_id = #{seq}
+    </select>
 </mapper>

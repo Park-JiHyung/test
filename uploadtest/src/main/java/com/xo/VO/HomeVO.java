@@ -11,7 +11,7 @@ import lombok.ToString;
 @ToString
 public class HomeVO {
 
-	private int wr_id;
+	private String wr_id;
 	private int wr_num;
 	private String wr_reply;
 	private int wr_parent;

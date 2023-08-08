@@ -55,6 +55,7 @@ input[type="submit"]:hover {
 	<form method="POST" action="uploadFile" enctype="multipart/form-data">
 		<table>
 			<tr>
+			<td><input type="hidden" name="board"value="${seq}"/></td> 
 				<td>Select File</td>
 				<td><input type="file" name="uploadFile" /></td>
 				<td>
